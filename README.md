@@ -32,7 +32,7 @@ end
 Returns a randomly generated session token string to a callback function. 
 
 ### openTrivia:getQuestions(number, callbackFunction, parameters)
-Returns a table of questions based on parameters given. False if error.
+Returns a table of questions based on parameters given. False if error. All parameters are optional.
 
 #### Parameters:
 |  Variable  |         options        |
