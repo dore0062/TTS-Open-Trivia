@@ -34,24 +34,26 @@ end
 function openTrivia:getQuestions(num, cb, parameters)
   local url = "https://opentdb.com/api.php?amount="..num
 
-  if parameters.token then
-    url = url.."&token="..parameters.token
-  end
+  if parameters then 
+    if parameters.token then
+      url = url.."&token="..parameters.token
+    end
 
-  -- Category numbers can be found with openTrivia:categoryLookup() or going to https://opentdb.com/api_category.php
-  if parameters.category then
-    url = url.."&category="..parameters.category
-  end
+    -- Category numbers can be found with openTrivia:categoryLookup() or going to https://opentdb.com/api_category.php
+    if parameters.category then
+      url = url.."&category="..parameters.category
+    end
 
-  -- easy, medium, hard
-  if parameters.difficulty then
-    url = url.."&difficulty="..parameters.difficulty
-  end
+    -- easy, medium, hard
+    if parameters.difficulty then
+      url = url.."&difficulty="..parameters.difficulty
+    end
 
-  -- True or false = boolean
-  -- Multiple choice = multiple
-  if parameters.type then
-    url = url.."&type="..parameters.type
+    -- True or false = boolean
+    -- Multiple choice = multiple
+    if parameters.type then
+      url = url.."&type="..parameters.type
+    end
   end
   
   jsonWebRequest(url, function(a)
