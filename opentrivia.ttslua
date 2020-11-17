@@ -1,0 +1,90 @@
+if openTrivia == nil then
+  openTrivia = {}
+end
+
+-- Returns a json-luatable message, false if it fails
+local function jsonWebRequest(url, cba)
+  WebRequest.get(url, function(a)
+      if not is_error then
+        cba(JSON.decode(a.text))
+      else
+      cba(false)
+    end
+  end)
+end
+
+-- Gets a session token from opentdb, false if error
+function openTrivia:getToken(cb)
+local requestTokenUrl = "https://opentdb.com/api_token.php?command=request"
+jsonWebRequest(requestTokenUrl, function(a)
+  if a.response_code ~= 0 or a == false then
+    if a ~= false then
+      log(a.response_message)
+    end
+    cb(false)
+  else
+    log("session_token="..a.token)
+    cb(a.token)
+  end
+ end)
+end
+
+-- Returns num random questions, false if error
+-- You CANNOT mix multiple categories, difficulties, etc. This is an API limitation.
+function openTrivia:getQuestions(num, cb, parameters)
+  local url = "https://opentdb.com/api.php?amount="..num
+
+  if parameters.token then
+    url = url.."&token="..parameters.token
+  end
+
+  -- Category numbers can be found with openTrivia:categoryLookup() or going to https://opentdb.com/api_category.php
+  if parameters.category then
+    url = url.."&category="..parameters.category
+  end
+
+  -- easy, medium, hard
+  if parameters.difficulty then
+    url = url.."&difficulty="..parameters.difficulty
+  end
+
+  -- True or false = boolean
+  -- Multiple choice = multiple
+  if parameters.type then
+    url = url.."&type="..parameters.type
+  end
+  
+  jsonWebRequest(url, function(a)
+    if a.response_code ~= 0 or a == false then
+      if a ~= false then
+        log(a.response_message)
+      end
+      cb(false)
+    else
+      cb(a.results)
+    end
+   end)
+end
+
+-- Resets current session false if error, false if error
+function openTrivia:resetSession(token, cb)
+  local resetTokenUrl = "https://opentdb.com/api_token.php?command=reset&token="..token
+  jsonWebRequest(resetTokenUrl, function(a)
+    if a.response_code ~= 0 or a == false then
+      if a ~= false then
+        log(a.response_message)
+      end
+      cb(false)
+    else
+      cb(true)
+    end
+   end)
+end
+
+-- Logs category IDs
+function openTrivia:categoryLookup()
+  local url = "https://opentdb.com/api_category.php"
+  jsonWebRequest(url, function(a) log(a) end)
+end
+
+return openTrivia
