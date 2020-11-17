@@ -18,7 +18,7 @@ function onLoad()
 
   openTrivia:getToken(function(token)
     parameters.token = token
-    openTrivia:getQuestions(1, doThing(results), parameters)
+    openTrivia:getQuestions(10, doThing(results), parameters) -- Returns 10 questions to doThing when completed.
   end)
 end
 
@@ -31,7 +31,7 @@ end
 ### openTrivia:getToken(callbackFunction)
 Returns a randomly generated session token string to a callback function. 
 
-### openTrivia:getQuestions(number, callbackFunction, parameters)
+### openTrivia:getQuestions(num, callbackFunction, parameters)
 Returns a table of questions based on parameters given. False if error. All parameters are optional.
 
 #### Parameters:
